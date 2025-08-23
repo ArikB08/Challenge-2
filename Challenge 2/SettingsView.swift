@@ -8,8 +8,13 @@
 import SwiftUI
 
 struct SettingsView: View {
+    @State private var faceNum: Double = 4
+    
     var body: some View {
-        Text("Settings")
+        VStack {
+            Text("No. of faces before unlock")
+            Slider(value: $faceNum, in: 0...10, step: 1)
+        }
     }
 }
 
