@@ -21,17 +21,17 @@ struct ContentView: View {
                     Text("Go to app")
                 }
                 .buttonStyle(BorderedProminentButtonStyle())
-                Button {
-                    
-                } label: {
+
+                NavigationLink(destination: FaceIDView()) {
                     Text("Unlock now")
+                }
                 }
                 .buttonStyle(BorderedProminentButtonStyle())
             }
             .padding()
         }
     }
-}
+
 
 #Preview {
     ContentView()
