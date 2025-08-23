@@ -13,13 +13,12 @@ struct HomePage: View {
             Tab("Home", systemImage: "house") {
         ContentView()
         }
-        Tab("Settings", systemImage: "gear") {
-        SettingsView()
-        }
         Tab("Unlock now", systemImage: "faceid") {
         FaceIDView()
         }
-        
+        Tab("Settings", systemImage: "gear") {
+        SettingsView()
+        }
         }
     }
 }
