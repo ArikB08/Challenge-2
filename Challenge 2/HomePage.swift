@@ -10,9 +10,7 @@ import SwiftUI
 struct HomePage: View {
     var body: some View {
         TabView {
-            Tab("Home", systemImage: "house") {
-        ContentView()
-        }
+            
         Tab("Unlock now", systemImage: "faceid") {
         FaceIDView()
         }
