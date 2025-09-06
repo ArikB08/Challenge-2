@@ -25,11 +25,14 @@ struct FaceIDView: View {
                         .padding(12)
                         .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12))
                         .padding(.bottom, 24)
+                    }
                 }
             }
             .navigationTitle("Unlock with your face!")
             .onAppear { classifier.start() }
             .onDisappear { classifier.stop() }
+            .onChange(of: classifier.confidencePerc) { newVal in
+                            if newVal >= passAcc { isAppUnlocked = true }
         }
     }
 }
@@ -62,6 +65,7 @@ private final class PreviewView: UIView {
 
 final class RealTimeClassifier: NSObject, ObservableObject {
     @Published var prediction: String = "Starting…"
+    @Published var confidencePerc: Double = 0
 
     let session = AVCaptureSession()
     private let videoOutput = AVCaptureVideoDataOutput()
@@ -71,14 +75,19 @@ final class RealTimeClassifier: NSObject, ObservableObject {
     private var lastAnalysisTime: CFTimeInterval = 0
     private let visionModel: VNCoreMLModel
     private lazy var visionRequest: VNCoreMLRequest = {
-        let request = VNCoreMLRequest(model: visionModel) { [weak self] req, _ in
-            guard let self, let results = req.results as? [VNClassificationObservation],
-                  let top = results.first else { return }
-            let line = String(format: "%@  %.0f%%", top.identifier, top.confidence * 100.0)
-            DispatchQueue.main.async {
-                self.prediction = line
+            let request = VNCoreMLRequest(model: visionModel) { [weak self] req, _ in
+                guard let self,
+                      let results = req.results as? [VNClassificationObservation],
+                      let top = results.first else { return }
+
+                let percent = Double(top.confidence * 100.0)
+                let line = String(format: "%@  %.0f%%", top.identifier, percent)
+
+                DispatchQueue.main.async {
+                    self.prediction = line
+                    self.confidencePerc = percent
+                }
             }
-        }
         request.imageCropAndScaleOption = .centerCrop
         return request
     }()
