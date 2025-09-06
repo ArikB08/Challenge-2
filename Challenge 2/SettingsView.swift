@@ -6,22 +6,61 @@
 //
 
 import SwiftUI
+import AppIntents
+import IntentsUI
+struct CheckLockIntent: AppIntent {
+    static let title: LocalizedStringResource = "Check if apps can unlock"
+    static let openAppWhenRun = false
+
+    @MainActor
+    func perform() async throws -> some IntentResult & ReturnsValue<Bool> & OpensIntent {
+        let isAppUnlocked = UserDefaults.standard.bool(forKey: "isAppUnlocked")
+        if isAppUnlocked {
+            return .result(value: true)
+        } else {
+            return .result(value: false, opensIntent: OpenMyAppIntent())
+        }
+    }
+}
+
+
+struct OpenMyAppIntent: AppIntent {
+    static let title: LocalizedStringResource = "Open App"
+    static let openAppWhenRun = true
+    
+    @MainActor
+    func perform() async throws -> some IntentResult {
+        
+        return .result()
+    }
+}
 
 struct SettingsView: View {
+    @AppStorage("isAppUnlocked") private var isAppUnlocked: Bool = false
+
     @State private var faceNum: Double = 4
     @State private var passAcc: Double = 75
+    @State var appsPickerPresented = false
     
-    var body: some View {
-        VStack {
-            Text("No. of faces before unlock: \(faceNum, specifier: "%.1f")") // how to remove the dp
-            Slider(value: $faceNum, in: 0...10, step: 1)
-            Text("")
-            Text("") // How do you make space between the two sliders 😭
-            Text("")
-            Text("")
-            Text("Passing Accuracy: \(passAcc, specifier: "%.1f")%")
-            Slider(value: $passAcc, in: 0...100, step: 1) // can change the step to have
+    @StateObject var model = ScreenTimeManager()
+    func askForPermission() async {
+        do {
+            model.requestAuthorization()
+        } catch {
+            print(error.localizedDescription)
         }
+    }
+   
+    var body: some View {
+        VStack{
+          
+            Text("Passing Accuracy: \(passAcc, specifier: "%.1f")%")
+            Slider(value: $passAcc, in: 0...100)
+            
+            
+        }
+        
+
     }
 }
 
