@@ -19,12 +19,45 @@ struct FaceIDView: View {
     @AppStorage("isAppUnlocked") private var isAppUnlocked: Bool = false
     @State var typesOfFaces: [String] = ["Null", "Eyes looking up, lips ready to make a raspberry sound", "Big open mouth laugh, tongue out"]
     @State var selectedTypeOfFace = 2
+    @State private var isAnimating = false
+        @State private var showUnlocked = false
+        
     var body: some View {
         NavigationStack {
             ZStack {
                 if isAppUnlocked {
                     Color.green.ignoresSafeArea()
-                    VStack { Text("Unlocked") }
+                    VStack {
+                        ZStack {
+                                        Image(systemName: "lock.fill")
+                                            .font(.system(size: 80, weight: .bold))
+                                            .foregroundStyle(.red.gradient)
+                                            .scaleEffect(showUnlocked ? 0 : 1)
+                                            .opacity(showUnlocked ? 0 : 1)
+                                        
+                                        Image(systemName: "lock.open.fill")
+                                            .font(.system(size: 80, weight: .bold))
+                                            .foregroundStyle(.green.gradient)
+                                            .scaleEffect(showUnlocked ? 1.2 : 0)
+                                            .opacity(showUnlocked ? 1 : 0)
+                                            .rotationEffect(.degrees(showUnlocked ? 360 : 0))
+                                    }
+                                    .shadow(color: showUnlocked ? .green.opacity(0.5) : .red.opacity(0.5),
+                                            radius: 20, x: 0, y: 8)
+                        Text("Unlocked")
+                            .font(.system(size: 48, weight: .bold, design: .rounded))
+                            .padding(.top, 24)
+                        Text("You may now access locked apps ONCE")
+                            .font(.system(size: 18, weight: .semibold, design: .rounded))
+                            .padding(12)
+                            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12))
+                    }
+                    .onAppear {
+                               withAnimation(.spring(response: 0.8, dampingFraction: 0.6)) {
+                                   showUnlocked = true
+                                   isAnimating = true
+                               }
+                           }
                 } else {
                     Color.gray.ignoresSafeArea()
 

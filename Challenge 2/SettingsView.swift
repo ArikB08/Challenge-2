@@ -38,7 +38,6 @@ struct OpenMyAppIntent: AppIntent {
 
 struct SettingsView: View {
     @AppStorage("isAppUnlocked") private var isAppUnlocked: Bool = false
-    
     @AppStorage("passingAccuracy") private var passAcc: Double = 75
     @State var appsPickerPresented = false
     
@@ -59,6 +58,7 @@ struct SettingsView: View {
             
             
         }
+        .frame(width: 350)
         
 
     }
