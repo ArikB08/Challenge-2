@@ -37,9 +37,8 @@ struct OpenMyAppIntent: AppIntent {
 
 struct SettingsView: View {
     @AppStorage("isAppUnlocked") private var isAppUnlocked: Bool = false
-
-    @State private var faceNum: Double = 4
-    @State private var passAcc: Double = 75
+    
+    @AppStorage("passingAccuracy") private var passAcc: Double = 75
     @State var appsPickerPresented = false
     
     @StateObject var model = ScreenTimeManager()

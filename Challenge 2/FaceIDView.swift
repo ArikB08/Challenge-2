@@ -11,7 +11,8 @@ import Vision
 
 struct FaceIDView: View {
     @StateObject private var classifier = RealTimeClassifier()
-
+    @AppStorage("passingAccuracy") private var passAcc: Double = 75
+    @AppStorage("isAppUnlocked") private var isAppUnlocked: Bool = false
     var body: some View {
         NavigationStack {
             ZStack {
