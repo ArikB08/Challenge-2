@@ -44,12 +44,12 @@ private struct CameraPreview: UIViewRepresentable {
         let view = PreviewView()
         view.videoPreviewLayer.session = session
         view.videoPreviewLayer.videoGravity = .resizeAspectFill
-        view.videoPreviewLayer.connection?.videoOrientation = .portrait
+        view.videoPreviewLayer.connection?.videoRotationAngle = 90
         return view
     }
 
     func updateUIView(_ uiView: PreviewView, context: Context) {
-        uiView.videoPreviewLayer.connection?.videoOrientation = .portrait
+        uiView.videoPreviewLayer.connection?.videoRotationAngle = 90
         uiView.setNeedsLayout()
     }
 }
@@ -132,7 +132,7 @@ final class RealTimeClassifier: NSObject, ObservableObject {
         }
         session.addOutput(videoOutput)
         if let connection = videoOutput.connection(with: .video) {
-            if connection.isVideoOrientationSupported { connection.videoOrientation = .portrait }
+            if connection.isVideoRotationAngleSupported(90) { connection.videoRotationAngle = 90 }
             if connection.isVideoMirroringSupported { connection.isVideoMirrored = (camera.position == .front) }
         }
         configured = true
