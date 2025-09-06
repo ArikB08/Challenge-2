@@ -16,6 +16,7 @@ struct CheckLockIntent: AppIntent {
     func perform() async throws -> some IntentResult & ReturnsValue<Bool> & OpensIntent {
         let isAppUnlocked = UserDefaults.standard.bool(forKey: "isAppUnlocked")
         if isAppUnlocked {
+            UserDefaults.standard.set(false, forKey: "isAppUnlocked")
             return .result(value: true)
         } else {
             return .result(value: false, opensIntent: OpenMyAppIntent())
